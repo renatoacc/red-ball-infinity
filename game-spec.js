@@ -1,10 +1,15 @@
-let bg;
+// create all variable for the game
 let ball;
-let box;
+let backG;
+let woodBox;
+let thornsImg;
+let totalScore = 0;
+let gravity = 0.5;
+const heightMax = 400;
 const obstacles = [];
-const thorns = [];
+const thornsArr = [];
 
-
+// create a variable to get the div with class .game-area
 const gameArea = document.querySelector('.game-area');
 
 // Rico Trebeljahr code to correct the velocity
@@ -20,59 +25,55 @@ function decayVelocity(vel) {
     return vel;
   }
 
-
-function setup() {
-    bg = loadImage('/img/background.png');
+// setup all the canvas elements.
+function preload(){
+    // loadImage for all variables
     ball = loadImage('/img/ball.png');
-    box = loadImage('/img/wood-box.png');
-    const canvas = createCanvas(800, 400);
+    backG = loadImage('/img/background.png');
+    woodBox = loadImage('/img/wood-box.png');
+    thornsImg = loadImage('/img/thorns.png');
+}
+function setup(){   
+    // save the canvas area in a variable to display on html document
+    const canvas = createCanvas(900,500);
     canvas.parent(gameArea);
     playerOne = new playerOne();
-    obstacles.push(new Obstacle(600,200, 100, 100));
-    
+    obstacles.push(new box());
+    thornsArr.push(new thorns());
+
 }
 
-
-class Square {
-    constructor(x, y, width, height) {
-      this.height = height;
-      this.width = width;
-      this.x = x;
-      this.y = y;
+function keyPressed() {
+    if (keyCode === UP_ARROW) {
+        playerOne.jump();
     }
-  
-    draw() {
-      image(box, this.x, this.y, this.width, this.height);
-    }
-  }
-  
-  class Obstacle extends Square {
-    constructor(x, y, width, height) {
-      super(x, y, width, height);
-    }
-  }
+}
 
+function collision(obj1, obj2){
+    return(obj1.x < obj2.x + obj2.width &&
+        obj1.x + obj1.width > obj2.x &&
+        obj1.y < obj2.y + obj2.height &&
+        obj1.height + obj1.y > obj2.y);
+}
 
+//player class - all elements.
 class playerOne {
     constructor(){
-        this.x = 5;
-        this.y = 250;
-        this.velX = 0;
-        this.velY = 0;
         this.width = 50;
         this.height = 50;
+        this.x = 5;
+        this.y = 350;
+        this.velX = 0;
+        this.velY = 0;
     }
 
-    draw () {
-
-        image(ball,this.x, this.y, this.width, this.height);
+    jump(){
+        if (this.y > 285 - this.height){
+            this.velY = - 10;
+        }
     }
 
-    gravaty() {
-        const touchGroundBall = this.y + this.height;
-        return touchGroundBall >= 250;
-    }
-
+    //movements ball
     move() {
         if(keyIsDown(LEFT_ARROW)) {
             this.velX -= 0.25;
@@ -80,84 +81,139 @@ class playerOne {
         if(keyIsDown(RIGHT_ARROW)) {
             this.velX += 0.25;
         }
-
+        
         this.velX = decayVelocity(this.velX);
 
-        // make the limits
         this.x += this.velX;
+        this.velY += gravity;
         this.y += this.velY;
-        this.velY += 0.5;
-        this.y += this.velY;
-  
 
-          this.x = max(1, this.x);
-          this.x = min(this.x, 750 - this.width - 1);
-          this.y = max(this.y, 50 + this.height + 1)
-          this.y = min(this.y, 300 - this.height - 1);
+        // Max width limits
+        this.x = max(1, this.x);
+        this.x = min(this.x, width - this.width - 1);
+        this.y = max(this.y, 0 + this.height + 1)
+        this.y = min(this.y, heightMax - this.height - 1);
+
+    }
+
+
+    draw() {
+        image(ball, this.x, this.y, this.width, this.height);
+    }
+}
+
+// create obstacle "woodBox"
+class box{
+    constructor(){
+        this.width = 100;
+        this.height = 100;
+        this.x = width;
+        this.y = heightMax - this.height;
+    }
+
+    move () {
+        this.x -= 2;
+        totalScore += 0.01;
+    }
+
+    draw () {
+        image(woodBox, this.x, this.y, this.width, this.height);
+    }
+    // alterar para uma linha de codigo o if statement
+    offscreen() {
+        if (this.x === -100){
+            return true;
+        } else{
+            return false;
+        }
+    }
+
+    collision(playerOne){
+        if(playerOne.y < this.y + this.height && playerOne.height + playerOne.y > this.y){
+            if(((playerOne.x -1) + playerOne.width) > this.x && playerOne.x < this.x + this.width){
+                return true;
+            }
+        }
+    }
+}
+
+// create enemies "thorns"
+class thorns {
+    constructor(){
+        this.width = 50;
+        this.height = 50;
+        this.x = width + (this.width * 2);
+        this.y = heightMax - this.height;
+    }
+
+    move () {
+        this.x -= 2;
+    }
+
+    offscreen() {
+        return this.x === -this.width;
+    }
+
+    collision(playerOne){
+        if(playerOne.y < this.y + this.height && playerOne.height + playerOne.y > this.y){
+            if((playerOne.x + playerOne.width) > this.x && playerOne.x < (this.x + this.width)){
+                return true;
+                
+            }
+        }
+    }
+
+    draw () {
+        image(thornsImg, this.x, this.y, this.width, this.height);
     }
 
 }
 
-function keyPressed() {
-    if (keyCode === UP_ARROW) {
-      playerOne.velY = - 8;
-    }
-  }
-
-
-function draw() {
-    background(bg);
-    obstacles.forEach((obstacle) => obstacle.draw());
+// function to draw all elements.
+function draw (){
+    background(backG);
     playerOne.draw();
     playerOne.move();
+
+    if (frameCount % 450 === 0){
+        obstacles.push(new box());
+    }
+    if(frameCount % 650 === 0 ){
+        thornsArr.push(new thorns());
+    }
+    //Create multiple thorns
+    for(let j = thornsArr.length -1; j >= 0; j--){
+        thornsArr[j].draw();
+        thornsArr[j].move();
+
+        if(thornsArr[j].collision(playerOne)){
+            noLoop();
+        }
+
+        if(thornsArr[j].offscreen()){
+            totalScore += 25;
+            thornsArr.splice(j, 1);
+        }
+
+    }
+    
+    //Create multiple box.
+    for(let i = obstacles.length -1; i >= 0; i--){
+        obstacles[i].draw();
+        obstacles[i].move();
+
+        //the object need have a shappe.
+        if(obstacles[i].collision(playerOne)){
+            playerOne.velX = - 2.5;
+            if(playerOne.y >= (obstacles[i].y - 2)){
+                playerOne.y = 250 - 1;
+            }
+        }
+
+        if(obstacles[i].offscreen()){
+            totalScore += 5;
+            obstacles.splice(i, 1);
+        }
+    }
+
 }
-
-
-
-
-
-
-
-
-
-// function collidingInXDir(square1, square2) {
-//     const leftOfSquare1 = square1.x;
-//     const rightOfSquare1 = square1.x + square1.width;
-//     const topOfSquare1 = square1.y;
-//     const bottomOfSquare1 = square1.y + square1.height;
-//     const collidingInXDirection =
-//       rightOfSquare1 > leftOfSquare2 && rightOfSquare2 > leftOfSquare1;
-//     return collidingInXDirection;
-//   }
-//   function boxCollision(square1, square2) {
-//     // simple collision detections -> AABB for 2 rects without rotation
-//     if (square1 instanceof Square && square2 instanceof Square) {
-//       const leftOfSquare1 = square1.x;
-//       const rightOfSquare1 = square1.x + square1.width;
-//       const topOfSquare1 = square1.y;
-//       const bottomOfSquare1 = square1.y + square1.height;
-  
-//       const leftOfSquare2 = square2.x;
-//       const rightOfSquare2 = square2.x + square2.width;
-//       const topOfSquare2 = square2.y;
-//       const bottomOfSquare2 = square2.y + square2.height;
-  
-//       const collidingInXDirection =
-//         rightOfSquare1 > leftOfSquare2 && rightOfSquare2 > leftOfSquare1;
-  
-//       const collidingInYDirection =
-//         bottomOfRect1 > topOfSquare2 && bottomOfSquare2 > topOfRect1;
-  
-//     //   console.log("X Collision?", collidingInXDirection);
-//     //   console.log("Y Collision?", collidingInYDirection);
-//       return collidingInXDirection && collidingInYDirection;
-//     }
-//     // console.log("Those are not Squares");
-//   }
-
-// function ballColliding() {
-//     const obstaclesWeWouldCollideWith = obstacles.filter((obstacle) => {
-//       return boxCollision(playerOne, obstacle);
-//     });
-//     return obstaclesWeWouldCollideWith.length >= 1;
-// }
