@@ -23,17 +23,30 @@ window.onload = () => {
     btnRestart.onclick = () => {
         restartGame();
     };
-
-    function startGame() {
-        gameIntroBoard.style.display = "none";
-        gameOverBoard.style.display = "none";
-        gameArea.style.display = "flex";
-
-        loop();
-    }
-
-
 }
+
+function startGame() {
+    gameIntroBoard.style.display = "none";
+    gameOverBoard.style.display = "none";
+    gameArea.style.display = "flex";
+
+    loop();
+}
+
+function restartGame(){
+
+    // playerOne = new playerOne();
+    obstacles.push(new box());
+    thornsArr.push(new thorns());
+    totalScore = 0;
+    gameIntroBoard.style.display = "none";
+    gameOverBoard.style.display = "none";
+    gameArea.style.display = "flex";
+
+    loop();
+}
+
+
 
 // Rico Trebeljahr code to correct the velocity
 function decayVelocity(vel) {
@@ -103,7 +116,7 @@ class playerOne {
         this.width = 50;
         this.height = 50;
         this.x = 5;
-        this.y = 350; // esta em teste
+        this.y = 350;
         this.velX = 0;
         this.velY = 0;
     }
@@ -249,17 +262,4 @@ function gameOver(){
 
     const highScore = document.querySelector(".high-score span");
     highScore.innerText= Math.floor(totalScore);
-}
-
-function restartGame(){
-
-    playerOne = new playerOne();
-    obstacles.push(new box());
-    thornsArr.push(new thorns());
-    totalScore = 0;
-    gameIntroBoard.style.display = "none";
-    gameOverBoard.style.display = "none";
-    gameArea.style.display = "flex";
-
-    loop();
 }

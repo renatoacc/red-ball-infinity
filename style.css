@@ -36,7 +36,7 @@ body {
     align-items: center;
     flex-direction: column;
 }
-.btn-start {
+/* .btn-start {
     position: relative;
     top: 50%;
     left: 50%;
@@ -50,10 +50,11 @@ body {
     border: none;
     cursor: pointer;
     border-radius: 5px;
-}
+} */
 
 .start{
     position: relative;
+    cursor: pointer;
     margin-left: 38%;
     width: 20%;
 }
@@ -63,7 +64,6 @@ body {
 .game-area{
     display: none;
     overflow: hidden;
-    display: flex;
     justify-content: center;
     align-items: center;
     width: 100vw;
@@ -85,6 +85,7 @@ canvas{
 
 
 /* gameover css */
+
 .imgLogoOver{
     position: relative;
     width: 45vw;
@@ -113,6 +114,7 @@ canvas{
 
 .restart{
     position: relative;
+    cursor: pointer;
     margin-left: 50%;
     margin-right: 50%;
     margin-top: -75%;
