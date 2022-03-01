@@ -1,0 +1,120 @@
+
+
+body {
+    background-image: url("/img/backgHTML.png");
+    background-repeat: no-repeat;
+    margin: 0;
+    border: 0;
+    width: 100vw;
+    height: auto;
+    font-family: 'Anton', sans-serif;
+    overflow: hidden;
+}
+
+/* intro board css */
+.intro-game{
+    display: block;
+    width: 100vw;
+    height: auto;
+}
+
+.imgBack{
+    position: absolute;
+    width: 100vw;
+    height: auto;
+    z-index: -1;
+}
+
+.imgLogo{
+    position: relative;
+    width: 45vw;
+    display: flex;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: -5%;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+.btn-start {
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -25%);
+    -ms-transform: translate(-50%, -25%);
+    background-color: rgba(134, 7, 7, 0.829);
+    color: white;
+    font-family: 'Anton', sans-serif;
+    font-size: 24px;
+    padding: 10px 24px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.start{
+    position: relative;
+    margin-left: 38%;
+    width: 20%;
+}
+
+/* Game board css */
+
+.game-area{
+    display: none;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+}
+
+canvas{
+    position: absolute;
+    z-index: -1;
+}
+
+.score{
+    margin-top: -22%;
+    margin-right: -45%;
+    font-size: 4vw;
+    color: white;
+    text-shadow: 5px 5px 5px #1d1d1d8c
+}
+
+
+/* gameover css */
+.imgLogoOver{
+    position: relative;
+    width: 45vw;
+    display: flex;
+    margin-left: auto;
+    margin-right: auto;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.gameOver{
+    display: none;
+    width: 100vw;
+    height: auto;
+}
+
+.high-score{
+    position: relative;
+    text-align: center;
+    font-size: 6vw;
+    margin-top: -10%;
+    color: aliceblue;
+    text-shadow: 10px 10px 5px #1d1d1d8c
+}
+
+.restart{
+    position: relative;
+    margin-left: 50%;
+    margin-right: 50%;
+    margin-top: -75%;
+    width: 5%;
+}

@@ -11,6 +11,29 @@ const thornsArr = [];
 
 // create a variable to get the div with class .game-area
 const gameArea = document.querySelector('.game-area');
+const btnStart = document.querySelector('.start');
+const btnRestart = document.querySelector('.restart');
+const gameIntroBoard = document.querySelector('.intro-game');
+const gameOverBoard = document.querySelector('.gameOver');
+
+window.onload = () => {
+    btnStart.onclick = () => {
+        startGame();
+    };
+    btnRestart.onclick = () => {
+        restartGame();
+    };
+
+    function startGame() {
+        gameIntroBoard.style.display = "none";
+        gameOverBoard.style.display = "none";
+        gameArea.style.display = "flex";
+
+        loop();
+    }
+
+
+}
 
 // Rico Trebeljahr code to correct the velocity
 function decayVelocity(vel) {
@@ -37,6 +60,8 @@ function setup(){
     // save the canvas area in a variable to display on html document
     const canvas = createCanvas(900,500);
     canvas.parent(gameArea);
+    // block the game started
+    noLoop();
     playerOne = new playerOne();
     obstacles.push(new box());
     thornsArr.push(new thorns());
@@ -56,13 +81,29 @@ function collision(obj1, obj2){
         obj1.height + obj1.y > obj2.y);
 }
 
+function collisionBoxThorns (){
+    for(let i = 0; i < obstacles.length; i ++){
+      for(let j = 0; j< thornsArr.length; j++){
+        if (collision (obstacles[i], thornsArr[j])){
+            obstacles.push(obstacles[i]);
+            thornsArr.splice(thornsArr[j], 1)
+        } 
+          
+      }
+    }    
+  }
+
+function offscreen(obj) {
+    return obj.x === -obj.width;
+}
+
 //player class - all elements.
 class playerOne {
     constructor(){
         this.width = 50;
         this.height = 50;
         this.x = 5;
-        this.y = 350;
+        this.y = 350; // esta em teste
         this.velX = 0;
         this.velY = 0;
     }
@@ -83,6 +124,7 @@ class playerOne {
         }
         
         this.velX = decayVelocity(this.velX);
+        this.velY = decayVelocity(this.velY);
 
         this.x += this.velX;
         this.velY += gravity;
@@ -109,6 +151,7 @@ class box{
         this.height = 100;
         this.x = width;
         this.y = heightMax - this.height;
+        this.velX = 0;
     }
 
     move () {
@@ -118,22 +161,6 @@ class box{
 
     draw () {
         image(woodBox, this.x, this.y, this.width, this.height);
-    }
-    // alterar para uma linha de codigo o if statement
-    offscreen() {
-        if (this.x === -100){
-            return true;
-        } else{
-            return false;
-        }
-    }
-
-    collision(playerOne){
-        if(playerOne.y < this.y + this.height && playerOne.height + playerOne.y > this.y){
-            if(((playerOne.x -1) + playerOne.width) > this.x && playerOne.x < this.x + this.width){
-                return true;
-            }
-        }
     }
 }
 
@@ -150,47 +177,43 @@ class thorns {
         this.x -= 2;
     }
 
-    offscreen() {
-        return this.x === -this.width;
-    }
-
-    collision(playerOne){
-        if(playerOne.y < this.y + this.height && playerOne.height + playerOne.y > this.y){
-            if((playerOne.x + playerOne.width) > this.x && playerOne.x < (this.x + this.width)){
-                return true;
-                
-            }
-        }
-    }
-
     draw () {
         image(thornsImg, this.x, this.y, this.width, this.height);
     }
 
 }
 
+// function countArray(array){
+//     for(let i = 0; i < array.lenght; i++){
+//         return array[i];
+//     }
+// }
+
 // function to draw all elements.
 function draw (){
     background(backG);
     playerOne.draw();
     playerOne.move();
-
+    collisionBoxThorns();
+    const score = document.querySelector(".score span");
+    score.innerText= Math.floor(totalScore);
     if (frameCount % 450 === 0){
         obstacles.push(new box());
     }
     if(frameCount % 650 === 0 ){
         thornsArr.push(new thorns());
     }
+
     //Create multiple thorns
     for(let j = thornsArr.length -1; j >= 0; j--){
         thornsArr[j].draw();
         thornsArr[j].move();
 
-        if(thornsArr[j].collision(playerOne)){
-            noLoop();
+        if(collision(playerOne, thornsArr[j])){
+            gameOver();
         }
 
-        if(thornsArr[j].offscreen()){
+        if(offscreen(thornsArr[j])){
             totalScore += 25;
             thornsArr.splice(j, 1);
         }
@@ -203,17 +226,40 @@ function draw (){
         obstacles[i].move();
 
         //the object need have a shappe.
-        if(obstacles[i].collision(playerOne)){
-            playerOne.velX = - 2.5;
-            if(playerOne.y >= (obstacles[i].y - 2)){
-                playerOne.y = 250 - 1;
+        if(collision(playerOne, obstacles[i])){
+            playerOne.velX -= 0.2;
+            if(playerOne.y >= obstacles[i].height){
+                playerOne.y = 250;
             }
         }
 
-        if(obstacles[i].offscreen()){
+        if(offscreen(obstacles[i])){
             totalScore += 5;
             obstacles.splice(i, 1);
         }
     }
 
+}
+
+function gameOver(){
+    noLoop();
+
+    gameOverBoard.style.display = "block";
+    gameArea.style.display = "none";
+
+    const highScore = document.querySelector(".high-score span");
+    highScore.innerText= Math.floor(totalScore);
+}
+
+function restartGame(){
+
+    playerOne = new playerOne();
+    obstacles.push(new box());
+    thornsArr.push(new thorns());
+    totalScore = 0;
+    gameIntroBoard.style.display = "none";
+    gameOverBoard.style.display = "none";
+    gameArea.style.display = "flex";
+
+    loop();
 }
