@@ -2,6 +2,7 @@
 let ball;
 let backG;
 let woodBox;
+let ringImg;
 let thornsImg;
 let totalScore = 0;
 let gravity = 0.5;
@@ -9,7 +10,9 @@ let isGameOver = false;
 const heightMax = 400;
 let obstacles = [];
 let thornsArr = [];
+let ringArr = [];
 let myPlayer;
+// let div = createDiv("Instructions");
 
 // create a variable to get the div with class .game-area
 const gameArea = document.querySelector(".game-area");
@@ -17,6 +20,9 @@ const btnStart = document.querySelector(".start");
 const btnRestart = document.querySelector(".restart");
 const gameIntroBoard = document.querySelector(".intro-game");
 const gameOverBoard = document.querySelector(".gameOver");
+const soundOn = document.querySelector(".soundOn");
+const soundOff = document.querySelector(".soundOff");
+const inst = document.querySelector(".instructions");
 
 window.onload = () => {
   btnStart.onclick = () => {
@@ -27,6 +33,20 @@ window.onload = () => {
     startGame();
     //draw();
   };
+  inst.onclick = () => {
+    //Painel de instruçoes
+  };
+
+  soundOn.onclick = () => {
+    soundOff.style.display = "block";
+    soundOn.style.display = "none";
+    // Music start
+  };
+  soundOff.onclick = () => {
+    soundOn.style.display = "block";
+    soundOff.style.display = "none";
+    // Music stop
+  };
 };
 
 function startGame() {
@@ -34,7 +54,6 @@ function startGame() {
   gameOverBoard.style.display = "none";
   gameArea.style.display = "flex";
   totalScore = 0;
-
   loop();
 }
 
@@ -58,16 +77,19 @@ function preload() {
   backG = loadImage("/img/background.png");
   woodBox = loadImage("/img/wood-box.png");
   thornsImg = loadImage("/img/thorns.png");
+  ringImg = loadImage("/img/ring.png");
 }
 function setup() {
   // save the canvas area in a variable to display on html document
   const canvas = createCanvas(900, 500);
   canvas.parent(gameArea);
+  //   div.parent(intro - game);
   // block the game started
   noLoop();
   myPlayer = new playerOne();
   obstacles.push(new box());
   thornsArr.push(new thorns());
+  ringArr.push(new ring());
 }
 
 function keyPressed() {
@@ -75,57 +97,70 @@ function keyPressed() {
     myPlayer.jump();
   }
 }
-function circleRectCol(circle, rect) {
-  const circleDistanceX = Math.abs(circle.x - rect.x);
-  const circleDistanceY = Math.abs(circle.y - rect.y);
 
-  if (circleDistanceX > rect.width / 2 + circle.r) {
-    return false;
-  }
-  if (circleDistanceY > rect.height / 2 + circle.r) {
-    return false;
-  }
+// // funcao de colisao do circle com o rectang.
+// function colliding2(c, R) {
+//   const nX = max(R.x, min(R.x + R.width, c.x));
+//   const nY = max(R.y, min(R.y + R.height, c.y));
+//   const N = createVector(c.x - nX, c.y - nY);
+//   //   console.log(R.x);
+//   fill("white");
+//   circle(nX, nY, 10);
+//   const Nmag = N.mag();
 
-  if (circleDistanceX <= rect.width / 2) {
-    return true;
-  }
-  if (circleDistanceY <= rect.height / 2) {
-    return true;
-  }
+//   const collisionHasOccured = Nmag <= c.radius;
 
-  const cornerDistance_sq =
-    Math.pow(circleDistanceX - rect.width / 2, 2) +
-    Math.pow(circleDistanceY - rect.height / 2, 2);
+//   if (collisionHasOccured) {
+//     const Nnorm = N.copy().normalize();
+//     c.add(Nnorm.mult(c.radius - Nmag));
+//   }
+// }
+// function colliding2(circle, rect) {
+//   let cx = circle.x;
+//   let cy = circle.y;
+//   //   let cw = circle.width;
+//   let rx = rect.x;
+//   let ry = rect.y;
+//   let rw = rect.width;
+//   let rh = rect.height;
+//   let testX = cx;
+//   let testY = cy;
 
-  return cornerDistance_sq <= Math.pow(circle.r, 2);
-}
+//   // which edge is closest?
+//   if (cx < rx) {
+//     testX = rx;
+//   }
+//   // test left edge
+//   else if (cx > rx + rw) {
+//     testX = rx + rw;
+//   } // right edge
+//   if (cy < ry) {
+//     testY = ry;
+//   }
+//   // top edge
+//   else if (cy > ry + rh) {
+//     testY = ry + rh;
+//   } // bottom edge
 
-function colliding2(circle, rect) {
-  let cx = circle.x;
-  let cy = circle.y;
-  let rx = rect.x;
-  let ry = rect.y;
-  let rw = rect.width;
-  let rh = rect.height;
-  let testX = cx;
-  let testY = cy;
-  if (cx < rx) testX = rx;
-  // test left edge
-  else if (cx > rx + rw) testX = rx + rw; // right edge
-  if (cy < ry) testY = ry;
-  // top edge
-  else if (cy > ry + rh) testY = ry + rh; // bottom edge
-  let d = dist(cx, cy, testX, testY);
-  if (d <= circle.r) {
-    return true;
-  }
-  return false;
-}
+//   // get distance from closest edges
+//   const distX = cx - testX;
+//   const distY = cy - testY;
+//   const distance = Math.abs(distX * distX + distY * distY);
+
+//   // if the distance is less than the radius, collision!
+//   if (distance <= circle.r) {
+//     console.log("hit");
+//     return true;
+//   }
+//   return false;
+// }
+
+// colisao de dois rect
 
 function collision(obj1, obj2) {
   return (
     obj1.x < obj2.x + obj2.width &&
-    obj1.x + obj1.width > obj2.x &&
+    obj2.x < obj1.x + obj1.width &&
     obj1.y < obj2.y + obj2.height &&
     obj1.height + obj1.y > obj2.y
   );
@@ -142,6 +177,8 @@ function collisionBoxThorns() {
   }
 }
 
+//funcao fora do ecra
+
 function offscreen(obj) {
   return obj.x === -obj.width;
 }
@@ -155,7 +192,7 @@ class playerOne {
     this.y = 350;
     this.velX = 0;
     this.velY = 0;
-    this.r = this.width / 2;
+    this.radius = this.width / 2;
   }
 
   jump() {
@@ -164,7 +201,6 @@ class playerOne {
     }
   }
 
-  //movements ball
   move() {
     if (keyIsDown(LEFT_ARROW)) {
       this.velX -= 0.25;
@@ -179,15 +215,15 @@ class playerOne {
     this.x += this.velX;
     this.velY += gravity;
     this.y += this.velY;
-    console.log(obstacles);
     const weColliding = obstacles.find((obj) => {
-      return colliding2(myPlayer, obj);
+      return collision(myPlayer, obj);
     });
 
-    console.log(weColliding);
     if (weColliding) {
-      //   this.x -= this.velX;
-      //   this.y -= this.velY;
+      this.velX *= -0.25; // reverse direction
+      this.velY *= -0.65;
+      this.x += this.velX;
+      this.y += this.velY;
     }
 
     // Max width limits
@@ -209,17 +245,16 @@ class box {
     this.height = 100;
     this.x = width;
     this.y = heightMax - this.height;
-    this.velX = 0;
   }
 
   move() {
-    this.x -= 2;
+    this.x -= 4;
     totalScore += 0.01;
   }
 
   draw() {
-    rect(this.x, this.y, this.width, this.height);
-    // image(woodBox, this.x, this.y, this.width, this.height);
+    // rect(this.x, this.y, this.width, this.height);
+    image(woodBox, this.x, this.y, this.width, this.height);
   }
 }
 
@@ -233,11 +268,28 @@ class thorns {
   }
 
   move() {
-    this.x -= 2;
+    this.x -= 4;
   }
 
   draw() {
     image(thornsImg, this.x, this.y, this.width, this.height);
+  }
+}
+
+class ring {
+  constructor() {
+    this.width = 40;
+    this.height = 90;
+    this.x = width + this.width * 2;
+    this.y = 280 - this.height;
+  }
+
+  move() {
+    this.x -= 2;
+  }
+
+  draw() {
+    image(ringImg, this.x, this.y, this.width, this.height);
   }
 }
 
@@ -255,11 +307,15 @@ function draw() {
   collisionBoxThorns();
   const score = document.querySelector(".score span");
   score.innerText = Math.floor(totalScore);
-  if (frameCount % 450 === 0) {
+  if (frameCount % 351 === 0) {
     obstacles.push(new box());
   }
-  if (frameCount % 650 === 0) {
+  if (frameCount % 456 === 0) {
     thornsArr.push(new thorns());
+  }
+
+  if (frameCount % 200 === 0) {
+    ringArr.push(new ring());
   }
 
   //Create multiple thorns
@@ -267,7 +323,7 @@ function draw() {
     thornsArr[j].draw();
     thornsArr[j].move();
 
-    if (colliding2(myPlayer, thornsArr[j])) {
+    if (collision(myPlayer, thornsArr[j])) {
       //isGameOver = true;
       noLoop();
       gameOver();
@@ -279,10 +335,21 @@ function draw() {
     }
   }
 
+  for (let a = ringArr.length - 1; a >= 0; a--) {
+    ringArr[a].draw();
+    ringArr[a].move();
+
+    if (collision(myPlayer, ringArr[a])) {
+      totalScore += 25;
+      ringArr.splice(a, 1);
+    }
+  }
+
   //Create multiple box.
   for (let i = obstacles.length - 1; i >= 0; i--) {
     obstacles[i].draw();
     obstacles[i].move();
+
     if (offscreen(obstacles[i])) {
       totalScore += 5;
       obstacles.splice(i, 1);

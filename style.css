@@ -51,7 +51,13 @@ body {
     cursor: pointer;
     border-radius: 5px;
 } */
-
+.instructions{
+    position: relative;
+    cursor: pointer;
+    margin-left: -50%;
+    margin-bottom: 2%;
+    width: 20%;
+}
 .start{
     position: relative;
     cursor: pointer;
@@ -77,10 +83,26 @@ canvas{
 
 .score{
     margin-top: -22%;
-    margin-right: -45%;
+    margin-left: 36%;
     font-size: 4vw;
     color: white;
     text-shadow: 5px 5px 5px #1d1d1d8c
+}
+.soundOn{
+    display: block;
+    position: relative;
+    cursor: pointer;
+    margin-left: 2%;
+    margin-top: -26%;
+    width: 5%;
+}
+.soundOff{
+    display: none;
+    position: relative;
+    cursor: pointer;
+    margin-left: 2%;
+    margin-top: -26%;
+    width: 5%;
 }
 
 
