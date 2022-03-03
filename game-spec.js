@@ -12,7 +12,9 @@ let obstacles = [];
 let thornsArr = [];
 let ringArr = [];
 let myPlayer;
-// let div = createDiv("Instructions");
+let mainSound;
+let ringSound;
+let jumpSound;
 
 // create a variable to get the div with class .game-area
 const gameArea = document.querySelector(".game-area");
@@ -73,17 +75,17 @@ function decayVelocity(vel) {
 // setup all the canvas elements.
 function preload() {
   // loadImage for all variables
-  ball = loadImage("/img/ball.png");
-  backG = loadImage("/img/background.png");
-  woodBox = loadImage("/img/wood-box.png");
-  thornsImg = loadImage("/img/thorns.png");
-  ringImg = loadImage("/img/ring.png");
+  ball = loadImage("img/ball.png");
+  backG = loadImage("img/background.png");
+  woodBox = loadImage("img/wood-box.png");
+  thornsImg = loadImage("img/thorns.png");
+  ringImg = loadImage("img/ring.png");
+  mainSound = loadSound("sound/intermission.mp3");
 }
 function setup() {
   // save the canvas area in a variable to display on html document
   const canvas = createCanvas(900, 500);
   canvas.parent(gameArea);
-  //   div.parent(intro - game);
   // block the game started
   noLoop();
   myPlayer = new playerOne();
