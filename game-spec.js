@@ -12,9 +12,12 @@ let obstacles = [];
 let thornsArr = [];
 let ringArr = [];
 let myPlayer;
+// sound variable
 let mainSound;
 let ringSound;
 let jumpSound;
+let boxSound;
+let gameoverSound;
 
 // setup all the canvas elements.
 function preload() {
@@ -24,9 +27,12 @@ function preload() {
   woodBox = loadImage("img/wood-box.png");
   thornsImg = loadImage("img/thorns.png");
   ringImg = loadImage("img/ring.png");
+  soundFormats("mp3", "wav");
   mainSound = loadSound("sound/intermission.mp3");
   ringSound = loadSound("sound/ring-bonus.wav");
   jumpSound = loadSound("sound/jump.wav");
+  boxSound = loadSound("sound/wood-break.wav");
+  gameoverSound = loadSound("sound/game-over.wav");
 }
 
 // create a variable to get the div with class .game-area
@@ -47,6 +53,7 @@ window.onload = () => {
   btnRestart.onclick = () => {
     //isGameOver = false;
     startGame();
+    mainSound.play();
     //draw();
   };
   inst.onclick = () => {
@@ -102,6 +109,7 @@ function setup() {
 
 function keyPressed() {
   if (keyCode === UP_ARROW) {
+    jumpSound.play();
     myPlayer.jump();
   }
 }
@@ -144,8 +152,8 @@ function collisionBoxThorns() {
   for (let i = 0; i < obstacles.length; i++) {
     for (let j = 0; j < thornsArr.length; j++) {
       if (collision(obstacles[i], thornsArr[j])) {
-        obstacles.push(obstacles[i]);
-        thornsArr.splice(thornsArr[j], 1);
+        boxSound.play();
+        obstacles.splice(obstacles[i], 1);
       }
     }
   }
@@ -166,6 +174,7 @@ const byCollisionWith = (
 };
 const increaseScore = () => {
   totalScore += 25;
+  ringSound.play();
 };
 //funcao fora do ecra
 
@@ -235,6 +244,7 @@ class playerOne {
     // image(ball, this.pos.x, this.pos.y, this.width, this.height);
   }
 }
+
 function onbox() {
   return true;
 }
@@ -248,8 +258,7 @@ class box {
   }
 
   move() {
-    this.x -= 4;
-    totalScore += 0.01;
+    this.x -= 5.5;
   }
 
   draw() {
@@ -268,7 +277,7 @@ class thorns {
   }
 
   move() {
-    this.x -= 4;
+    this.x -= 7;
   }
 
   draw() {
@@ -305,10 +314,10 @@ function draw() {
   collisionBoxThorns();
   const score = document.querySelector(".score span");
   score.innerText = Math.floor(totalScore);
-  if (frameCount % 351 === 0) {
+  if (frameCount % 135 === 0) {
     obstacles.push(new box());
   }
-  if (frameCount % 456 === 0) {
+  if (frameCount % 100 === 0) {
     thornsArr.push(new thorns());
   }
 
@@ -330,9 +339,8 @@ function draw() {
   for (let a = ringArr.length - 1; a >= 0; a--) {
     ringArr[a].draw();
     ringArr[a].move();
-    if (offscreen(ringArr[j])) {
-      totalScore += 25;
-      ringArr.splice(j, 1);
+    if (offscreen(ringArr[a])) {
+      ringArr.splice(a, 1);
     }
   }
 
@@ -355,6 +363,8 @@ function draw() {
 }
 
 function gameOver() {
+  mainSound.stop();
+  gameoverSound.play();
   myPlayer.x = 5;
   myPlayer.y = 350;
   noLoop();
