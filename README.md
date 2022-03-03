@@ -21,53 +21,53 @@ Data structure
 
 game-spec.js
 Correction Move
-*decayVelocity(){}
+* decayVelocity(){}
 
 Collisions
-*collision2(){}
-*collision(){}
-*collisionBoxThorns(){}
-*byCollisionWith(){}
-*onbox(){}
-*offscreen(){}
+* collision2(){}
+* collision(){}
+* collisionBoxThorns(){}
+* byCollisionWith(){}
+* onbox(){}
+* offscreen(){}
 
 Score
-*increaseScore(){}
+* increaseScore(){}
 
 
 Player
-*playerOne(){this.pos.x, this.pos.y, this.radius * 2}
-*jump(){}
-*move(){}
-*draw(){}
+* playerOne(){this.pos.x, this.pos.y, this.radius * 2}
+* jump(){}
+* move(){}
+* draw(){}
 
 Wood Box
-*box(){this.x, this.y, this.width, this.height}
-*move(){}
-*draw(){}
+* box(){this.x, this.y, this.width, this.height}
+* move(){}
+* draw(){}
 
 Thorns
-*thorns(){this.x, this.y, this.width, this.height}
-*move(){}
-*draw(){}
+* thorns(){this.x, this.y, this.width, this.height}
+* move(){}
+* draw(){}
 
 Rings
-*ring(){this.x, this.y, this.width, this.height}
-*move(){}
-*draw(){}
+* ring(){this.x, this.y, this.width, this.height}
+* move(){}
+* draw(){}
 
 Main Draw
-*draw(){}
+* draw(){}
 
 Game Over
-*gameOver(){}
+* gameOver(){}
 
 States y States Transitions
 Definition of the different states and their transition (transition functions)
 
-*intro-game
-*game-area
-*gameOver
+* intro-game
+* game-area
+* gameOver
 
 
 Additional Links
