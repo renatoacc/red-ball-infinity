@@ -7,11 +7,11 @@ In my game, the ball has to jump over boxes and throns in order to catch rings t
 If the ball lands on the thorns, the game is over.
 
 MVP
-*The game has a ball that moves horizontally and can jump
-*The ball needs go under the obstacles
-*If the thorns collide with boxes, they explode
-*The player needs to catch the rings to increase the score
-*The player loses when the ball hits the thorns
+* The game has a ball that moves horizontally and can jump
+* The ball needs go under the obstacles
+* If the thorns collide with boxes, they explode
+* The player needs to catch the rings to increase the score
+* The player loses when the ball hits the thorns
 
 Backlog
 * rings to increase the score
