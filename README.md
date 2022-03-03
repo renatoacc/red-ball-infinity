@@ -20,6 +20,7 @@ Backlog
 Data structure
 
 game-spec.js
+
 Correction Move
 * decayVelocity(){}
 
