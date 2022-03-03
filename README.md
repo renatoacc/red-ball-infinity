@@ -13,19 +13,62 @@ MVP
 *The player needs to catch the rings to increase the score
 *The player loses when the ball hits the thorns
 
+Backlog
+* rings to increase the score
+* sounds
 
 Data structure
 
+game-spec.js
+Correction Move
+*decayVelocity(){}
+
+Collisions
+*collision2(){}
+*collision(){}
+*collisionBoxThorns(){}
+*byCollisionWith(){}
+*onbox(){}
+*offscreen(){}
+
+Score
+*increaseScore(){}
+
+
+Player
+*playerOne(){this.pos.x, this.pos.y, this.radius * 2}
+*jump(){}
+*move(){}
+*draw(){}
+
+Wood Box
+*box(){this.x, this.y, this.width, this.height}
+*move(){}
+*draw(){}
+
+Thorns
+*thorns(){this.x, this.y, this.width, this.height}
+*move(){}
+*draw(){}
+
+Rings
+*ring(){this.x, this.y, this.width, this.height}
+*move(){}
+*draw(){}
+
+Main Draw
+*draw(){}
+
+Game Over
+*gameOver(){}
 
 States y States Transitions
 Definition of the different states and their transition (transition functions)
 
-splashScreen
-gameScreen
-gameoverScreen
-winScreen
-Task
-Task definition in order of priority
+*intro-game
+*game-area
+*gameOver
+
 
 Additional Links
 Link url
