@@ -44,7 +44,7 @@ const gameOverBoard = document.querySelector(".gameOver");
 const soundOn = document.querySelector(".soundOn");
 const soundOff = document.querySelector(".soundOff");
 const inst = document.querySelector(".instructions");
-const intruPainel = document.querySelector(".painel");
+const painel = document.querySelector(".painel");
 
 window.onload = () => {
   btnStart.onclick = () => {
@@ -57,10 +57,6 @@ window.onload = () => {
     mainSound.play();
     //draw();
   };
-  inst.onclick = () => {
-    intruPainel.style.display = "block";
-  };
-
   soundOn.onclick = () => {
     mainSound.stop();
     soundOff.style.display = "block";
@@ -77,6 +73,7 @@ window.onload = () => {
 
 function startGame() {
   gameIntroBoard.style.display = "none";
+  painel.style.display = "none";
   gameOverBoard.style.display = "none";
   gameArea.style.display = "flex";
   totalScore = 0;
@@ -103,9 +100,9 @@ function setup() {
   // block the game started
   noLoop();
   myPlayer = new playerOne();
-  obstacles.push(new box());
   thornsArr.push(new thorns());
   ringArr.push(new ring());
+  obstacles.push(new box());
 }
 
 function keyPressed() {
@@ -259,7 +256,7 @@ class box {
   }
 
   move() {
-    this.x -= 5.5;
+    this.x -= 7;
   }
 
   draw() {
