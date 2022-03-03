@@ -16,6 +16,19 @@ let mainSound;
 let ringSound;
 let jumpSound;
 
+// setup all the canvas elements.
+function preload() {
+  // loadImage for all variables
+  ball = loadImage("img/ball.png");
+  backG = loadImage("img/background.png");
+  woodBox = loadImage("img/wood-box.png");
+  thornsImg = loadImage("img/thorns.png");
+  ringImg = loadImage("img/ring.png");
+  mainSound = loadSound("sound/intermission.mp3");
+  ringSound = loadSound("sound/ring-bonus.wav");
+  jumpSound = loadSound("sound/jump.wav");
+}
+
 // create a variable to get the div with class .game-area
 const gameArea = document.querySelector(".game-area");
 const btnStart = document.querySelector(".start");
@@ -29,6 +42,7 @@ const inst = document.querySelector(".instructions");
 window.onload = () => {
   btnStart.onclick = () => {
     startGame();
+    mainSound.play();
   };
   btnRestart.onclick = () => {
     //isGameOver = false;
@@ -40,11 +54,13 @@ window.onload = () => {
   };
 
   soundOn.onclick = () => {
+    mainSound.stop();
     soundOff.style.display = "block";
     soundOn.style.display = "none";
     // Music start
   };
   soundOff.onclick = () => {
+    mainSound.play();
     soundOn.style.display = "block";
     soundOff.style.display = "none";
     // Music stop
@@ -72,16 +88,6 @@ function decayVelocity(vel) {
   return vel;
 }
 
-// setup all the canvas elements.
-function preload() {
-  // loadImage for all variables
-  ball = loadImage("img/ball.png");
-  backG = loadImage("img/background.png");
-  woodBox = loadImage("img/wood-box.png");
-  thornsImg = loadImage("img/thorns.png");
-  ringImg = loadImage("img/ring.png");
-  mainSound = loadSound("sound/intermission.mp3");
-}
 function setup() {
   // save the canvas area in a variable to display on html document
   const canvas = createCanvas(900, 500);
@@ -100,62 +106,28 @@ function keyPressed() {
   }
 }
 
-// // funcao de colisao do circle com o rectang.
-// function colliding2(c, R) {
-//   const nX = max(R.x, min(R.x + R.width, c.x));
-//   const nY = max(R.y, min(R.y + R.height, c.y));
-//   const N = createVector(c.x - nX, c.y - nY);
-//   //   console.log(R.x);
-//   fill("white");
-//   circle(nX, nY, 10);
-//   const Nmag = N.mag();
+// // Rico Trebeljahr code to correct collision.
+// funcao de colisao do circle com o rectang.
+function collision2(c, R, withCorrection = true) {
+  const nX = max(R.x, min(R.x + R.width, c.pos.x));
+  const nY = max(R.y, min(R.y + R.height, c.pos.y));
+  const N = createVector(c.pos.x - nX, c.pos.y - nY);
 
-//   const collisionHasOccured = Nmag <= c.radius;
+  // actually draw closest point
+  // fill("white");
+  // circle(nX, nY, 10);
 
-//   if (collisionHasOccured) {
-//     const Nnorm = N.copy().normalize();
-//     c.add(Nnorm.mult(c.radius - Nmag));
-//   }
-// }
-// function colliding2(circle, rect) {
-//   let cx = circle.x;
-//   let cy = circle.y;
-//   //   let cw = circle.width;
-//   let rx = rect.x;
-//   let ry = rect.y;
-//   let rw = rect.width;
-//   let rh = rect.height;
-//   let testX = cx;
-//   let testY = cy;
+  const Nmag = N.mag();
 
-//   // which edge is closest?
-//   if (cx < rx) {
-//     testX = rx;
-//   }
-//   // test left edge
-//   else if (cx > rx + rw) {
-//     testX = rx + rw;
-//   } // right edge
-//   if (cy < ry) {
-//     testY = ry;
-//   }
-//   // top edge
-//   else if (cy > ry + rh) {
-//     testY = ry + rh;
-//   } // bottom edge
+  const collisionHasOccured = Nmag <= c.radius;
 
-//   // get distance from closest edges
-//   const distX = cx - testX;
-//   const distY = cy - testY;
-//   const distance = Math.abs(distX * distX + distY * distY);
+  if (collisionHasOccured && withCorrection) {
+    const Nnorm = N.copy().normalize();
+    c.pos.add(Nnorm.mult(c.radius - Nmag));
+  }
 
-//   // if the distance is less than the radius, collision!
-//   if (distance <= circle.r) {
-//     console.log("hit");
-//     return true;
-//   }
-//   return false;
-// }
+  return collisionHasOccured;
+}
 
 // colisao de dois rect
 
@@ -179,6 +151,22 @@ function collisionBoxThorns() {
   }
 }
 
+const byCollisionWith = (
+  thingToColliding,
+  functionToBeExecutedWhenColliding
+) => {
+  return (obj) => {
+    const hit = collision2(thingToColliding, obj, false);
+    if (hit) {
+      functionToBeExecutedWhenColliding();
+      return false;
+    }
+    return true;
+  };
+};
+const increaseScore = () => {
+  totalScore += 25;
+};
 //funcao fora do ecra
 
 function offscreen(obj) {
@@ -190,15 +178,14 @@ class playerOne {
   constructor() {
     this.width = 50;
     this.height = 50;
-    this.x = 5;
-    this.y = 350;
+    this.pos = createVector(5, 350);
     this.velX = 0;
     this.velY = 0;
     this.radius = this.width / 2;
   }
 
   jump() {
-    if (this.y > 285 - this.height) {
+    if (this.pos.y > 285 - this.height) {
       this.velY = -10;
     }
   }
@@ -214,32 +201,43 @@ class playerOne {
     this.velX = decayVelocity(this.velX);
     this.velY = decayVelocity(this.velY);
 
-    this.x += this.velX;
+    this.pos.x += this.velX;
     this.velY += gravity;
-    this.y += this.velY;
-    const weColliding = obstacles.find((obj) => {
-      return collision(myPlayer, obj);
+    // console.log(this.velY);
+    this.pos.y += this.velY;
+
+    obstacles.forEach((obj) => {
+      collision2(this, obj);
     });
 
-    if (weColliding) {
-      this.velX *= -0.25; // reverse direction
-      this.velY *= -0.65;
-      this.x += this.velX;
-      this.y += this.velY;
-    }
+    ringArr = ringArr.filter(byCollisionWith(this, increaseScore));
+    thornsArr = thornsArr.filter(byCollisionWith(this, gameOver));
 
+    const groundLevel = heightMax - this.radius;
     // Max width limits
-    this.x = max(1, this.x);
-    this.x = min(this.x, width - this.width - 1);
-    this.y = max(this.y, 0 + this.height + 1);
-    this.y = min(this.y, heightMax - this.height - 1);
+    this.pos.x = max(1, this.pos.x);
+    this.pos.x = min(this.pos.x, width - this.width);
+    this.pos.y = max(this.pos.y, this.radius);
+
+    // fix force
+    this.pos.y = min(this.pos.y, groundLevel);
+    if (this.pos.y === groundLevel && onbox()) {
+      gravity = 0;
+      this.velY = min(this.velY, 0);
+    } else {
+      gravity = 0.5;
+    }
   }
 
   draw() {
-    image(ball, this.x, this.y, this.width, this.height);
+    fill(180, 30, 60);
+    circle(this.pos.x, this.pos.y, this.radius * 2);
+    // image(ball, this.pos.x, this.pos.y, this.width, this.height);
   }
 }
-
+function onbox() {
+  return true;
+}
 // create obstacle "woodBox"
 class box {
   constructor() {
@@ -304,8 +302,6 @@ class ring {
 // function to draw all elements.
 function draw() {
   background(backG);
-  myPlayer.draw();
-  myPlayer.move();
   collisionBoxThorns();
   const score = document.querySelector(".score span");
   score.innerText = Math.floor(totalScore);
@@ -325,12 +321,6 @@ function draw() {
     thornsArr[j].draw();
     thornsArr[j].move();
 
-    if (collision(myPlayer, thornsArr[j])) {
-      //isGameOver = true;
-      noLoop();
-      gameOver();
-      return;
-    }
     if (offscreen(thornsArr[j])) {
       totalScore += 25;
       thornsArr.splice(j, 1);
@@ -340,10 +330,9 @@ function draw() {
   for (let a = ringArr.length - 1; a >= 0; a--) {
     ringArr[a].draw();
     ringArr[a].move();
-
-    if (collision(myPlayer, ringArr[a])) {
+    if (offscreen(ringArr[j])) {
       totalScore += 25;
-      ringArr.splice(a, 1);
+      ringArr.splice(j, 1);
     }
   }
 
@@ -357,6 +346,8 @@ function draw() {
       obstacles.splice(i, 1);
     }
   }
+  myPlayer.draw();
+  myPlayer.move();
 
   //if(isGameOver === true){
   //   noLoop();
@@ -364,10 +355,11 @@ function draw() {
 }
 
 function gameOver() {
-  gameOverBoard.style.display = "block";
-  gameArea.style.display = "none";
   myPlayer.x = 5;
   myPlayer.y = 350;
+  noLoop();
+  gameOverBoard.style.display = "block";
+  gameArea.style.display = "none";
   thornsArr = [];
   obstacles = [];
   const highScore = document.querySelector(".high-score span");
