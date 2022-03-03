@@ -1,21 +1,21 @@
 RedBall Inifinity
 
-Link Deploy
-
 Description
 
-Game inspired by the famous game "Bounce", from the 90's. A simple recreation to demonstrate all the skills that were learned in Bootcamp.
-In my game the ball has to jumps over boxes and throns. In order to catch rings to earn more points.
-If the ball lands on the thorns, it the game is over.
+Game inspired by the famous game "Bounce", from the 90s. A simple recreation to demonstrate all the skills that were learned in Bootcamp.
+In my game, the ball has to jump over boxes and throns in order to catch rings to earn more points.
+If the ball lands on the thorns, the game is over.
 
 MVP
-MVP definition, deliverables.
+*The game has a ball that moves horizontally and can jump
+*The ball needs go under the obstacles
+*If the thorns collide with boxes, they explode
+*The player needs to catch the rings to increase the score
+*The player loses when the ball hits the thorns
 
-Backlog
-Backlog elements.
 
 Data structure
-Classes and methods definition. Or functions.
+
 
 States y States Transitions
 Definition of the different states and their transition (transition functions)

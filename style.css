@@ -22,6 +22,7 @@ body {
     position: absolute;
     width: 100vw;
     height: auto;
+    margin-top: -5%;
     z-index: -1;
 }
 
@@ -31,26 +32,12 @@ body {
     display: flex;
     margin-left: auto;
     margin-right: auto;
-    margin-top: -5%;
+    margin-top: -10%;
     justify-content: center;
     align-items: center;
     flex-direction: column;
 }
-/* .btn-start {
-    position: relative;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -25%);
-    -ms-transform: translate(-50%, -25%);
-    background-color: rgba(134, 7, 7, 0.829);
-    color: white;
-    font-family: 'Anton', sans-serif;
-    font-size: 24px;
-    padding: 10px 24px;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-} */
+
 .instructions{
     position: relative;
     cursor: pointer;
@@ -58,10 +45,19 @@ body {
     margin-bottom: 2%;
     width: 20%;
 }
+
+.painel{
+    display: none;
+    position: relative;
+    width: 40%;
+    margin-left: 28.5%;
+    margin-top: -40%;
+}
+
 .start{
     position: relative;
     cursor: pointer;
-    margin-left: 38%;
+    margin-left: 40%;
     width: 20%;
 }
 

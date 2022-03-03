@@ -44,6 +44,7 @@ const gameOverBoard = document.querySelector(".gameOver");
 const soundOn = document.querySelector(".soundOn");
 const soundOff = document.querySelector(".soundOff");
 const inst = document.querySelector(".instructions");
+const intruPainel = document.querySelector(".painel");
 
 window.onload = () => {
   btnStart.onclick = () => {
@@ -57,7 +58,7 @@ window.onload = () => {
     //draw();
   };
   inst.onclick = () => {
-    //Painel de instruçoes
+    intruPainel.style.display = "block";
   };
 
   soundOn.onclick = () => {
