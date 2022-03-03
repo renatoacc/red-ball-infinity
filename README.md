@@ -71,8 +71,8 @@ Definition of the different states and their transition (transition functions)
 * gameOver
 
 
-Additional Links
-Link url
+Demo
+* Link https://renatoacc.github.io/red-ball-infinity/
 
 Slides
-Link https://docs.google.com/presentation/d/1b1aH_fIWDEhc5zBH3KZbRMHkgIV0hikfAGFqmRiIunA/edit?usp=sharing
+* Link https://docs.google.com/presentation/d/1b1aH_fIWDEhc5zBH3KZbRMHkgIV0hikfAGFqmRiIunA/edit?usp=sharing
