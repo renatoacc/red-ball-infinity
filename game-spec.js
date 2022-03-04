@@ -64,7 +64,7 @@ window.onload = () => {
     // Music start
   };
   soundOff.onclick = () => {
-    mainSound.play();
+    mainSound.loop();
     soundOn.style.display = "block";
     soundOff.style.display = "none";
     // Music stop
