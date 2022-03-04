@@ -54,7 +54,7 @@ window.onload = () => {
   btnRestart.onclick = () => {
     //isGameOver = false;
     startGame();
-    mainSound.play();
+    mainSound.loop();
     //draw();
   };
   soundOn.onclick = () => {
