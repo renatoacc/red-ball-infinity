@@ -49,7 +49,7 @@ const painel = document.querySelector(".painel");
 window.onload = () => {
   btnStart.onclick = () => {
     startGame();
-    mainSound.play();
+    mainSound.loop();
   };
   btnRestart.onclick = () => {
     //isGameOver = false;
